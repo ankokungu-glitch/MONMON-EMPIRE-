@@ -72,11 +72,129 @@ $("#qform").onsubmit=async e=>{
   }
   const ok=$("#ok");if(sent){ok.classList.add("on");f.reset();ok.focus()}else{ok.textContent="Something went wrong. Please call 0758 630928 or use WhatsApp.";ok.classList.add("on")}
 };
-// accessibility
-const acb=$("#accb"),acp=$("#accp");let sz=100;
-acb.onclick=()=>{const o=acp.classList.toggle("open");acb.setAttribute("aria-expanded",o)};
-acp.onclick=e=>{const a=e.target.dataset.a;if(!a)return;
-  if(a==="up")sz=Math.min(sz+10,140);else if(a==="down")sz=Math.max(sz-10,80);
-  else if(a==="reset"){sz=100;document.body.classList.remove("hc","gray","links","nomo")}
-  else document.body.classList.toggle(a);
-  document.documentElement.style.setProperty("--fs",sz+"%")};
+const storageKey="monmon-accessibility";
+const defaultState={scale:"normal",highContrast:false,reduceMotion:false,underlineLinks:false};
+const state={...defaultState};
+const accTrigger=$("#accb");
+const accPanel=$("#accp");
+const scaleButtons=$$(".scale-btn");
+const toggleButtons=$$(".toggle-option");
+
+const safeStorage = {
+  get(){
+    try{const raw=localStorage.getItem(storageKey); return raw ? JSON.parse(raw) : null;}catch{return null;}
+  },
+  set(value){
+    try{localStorage.setItem(storageKey, JSON.stringify(value));}catch{}
+  }
+};
+
+const applyScale = () => {
+  document.documentElement.dataset.scale = state.scale;
+  scaleButtons.forEach(btn => {
+    const active = btn.dataset.scale === state.scale;
+    btn.classList.toggle("active", active);
+    btn.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+};
+
+const applyToggle = (key, value) => {
+  const classMap = { highContrast:"high-contrast", reduceMotion:"reduce-motion", underlineLinks:"underline-links" };
+  const bodyClass = classMap[key];
+  if (bodyClass) {
+    document.body.classList.toggle(bodyClass, value);
+  }
+};
+
+const applyState = () => {
+  applyScale();
+  toggleButtons.forEach(btn => {
+    const key = btn.dataset.toggle;
+    const enabled = Boolean(state[key]);
+    btn.setAttribute("aria-pressed", enabled ? "true" : "false");
+    const switchEl = btn.querySelector(".switch");
+    if (switchEl) switchEl.classList.toggle("active", enabled);
+  });
+  Object.keys(defaultState).forEach((key) => {
+    if (key === "scale") return;
+    applyToggle(key, Boolean(state[key]));
+  });
+  document.body.classList.toggle("high-contrast", Boolean(state.highContrast));
+  document.body.classList.toggle("reduce-motion", Boolean(state.reduceMotion));
+  document.body.classList.toggle("underline-links", Boolean(state.underlineLinks));
+  safeStorage.set(state);
+};
+
+const setScale = (scale) => {
+  state.scale = scale;
+  applyState();
+};
+
+const setToggle = (key, value) => {
+  state[key] = value;
+  applyState();
+};
+
+const openPanel = () => {
+  accPanel.hidden = false;
+  accPanel.classList.add("open");
+  accTrigger.setAttribute("aria-expanded", "true");
+};
+
+const closePanel = () => {
+  accPanel.classList.remove("open");
+  accPanel.hidden = true;
+  accTrigger.setAttribute("aria-expanded", "false");
+};
+
+accTrigger.addEventListener("click", () => {
+  const expanded = accTrigger.getAttribute("aria-expanded") === "true";
+  if (expanded) closePanel(); else openPanel();
+});
+
+accPanel.addEventListener("click", (event) => {
+  const scaleBtn = event.target.closest(".scale-btn");
+  if (scaleBtn) {
+    setScale(scaleBtn.dataset.scale);
+    return;
+  }
+
+  const toggleBtn = event.target.closest(".toggle-option");
+  if (toggleBtn) {
+    const key = toggleBtn.dataset.toggle;
+    const enabled = toggleBtn.getAttribute("aria-pressed") === "true";
+    setToggle(key, !enabled);
+    return;
+  }
+
+  if (event.target.closest(".panel-close")) {
+    closePanel();
+    return;
+  }
+
+  if (event.target.closest(".reset-btn")) {
+    Object.assign(state, defaultState);
+    applyState();
+    closePanel();
+  }
+});
+
+document.addEventListener("click", (event) => {
+  if (!accPanel.hidden && !accPanel.contains(event.target) && !accTrigger.contains(event.target)) {
+    closePanel();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !accPanel.hidden) {
+    closePanel();
+  }
+});
+
+const saved = safeStorage.get();
+if (saved) Object.assign(state, { ...defaultState, ...saved });
+if (window.matchMedia("(prefers-reduced-motion: reduce)").matches && !saved?.reduceMotion) {
+  state.reduceMotion = true;
+}
+applyState();
+closePanel();
