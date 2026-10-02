@@ -74,7 +74,7 @@ $("#qform").onsubmit=async e=>{
 };
 const storageKey="monmon-accessibility";
 const defaultState={scale:"compact",highContrast:false,reduceMotion:false,underlineLinks:false};
-const savedScaleMap={small:"compact",normal:"compact", "slightly-larger":"medium",large:"original",larger:"original"};
+const savedScaleMap={small:"compact",normal:"compact",large:"original","slightly-larger":"medium",larger:"original"};
 const scaleValues=["compact","medium","original"];
 const state={...defaultState};
 const accTrigger=$("#accb");
