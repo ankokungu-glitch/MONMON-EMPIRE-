@@ -74,6 +74,8 @@ $("#qform").onsubmit=async e=>{
 };
 const storageKey="monmon-accessibility";
 const defaultState={scale:"normal",highContrast:false,reduceMotion:false,underlineLinks:false};
+const savedScaleMap={small:"normal",normal:"slightly-larger",large:"larger"};
+const scaleValues=["normal","slightly-larger","larger"];
 const state={...defaultState};
 const accTrigger=$("#accb");
 const accPanel=$("#accp");
@@ -192,7 +194,10 @@ document.addEventListener("keydown", (event) => {
 });
 
 const saved = safeStorage.get();
-if (saved) Object.assign(state, { ...defaultState, ...saved });
+if (saved) {
+  Object.assign(state, { ...defaultState, ...saved });
+  state.scale=savedScaleMap[saved.scale] || (scaleValues.includes(saved.scale) ? saved.scale : defaultState.scale);
+}
 if (window.matchMedia("(prefers-reduced-motion: reduce)").matches && !saved?.reduceMotion) {
   state.reduceMotion = true;
 }
