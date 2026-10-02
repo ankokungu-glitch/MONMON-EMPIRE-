@@ -73,9 +73,9 @@ $("#qform").onsubmit=async e=>{
   const ok=$("#ok");if(sent){ok.classList.add("on");f.reset();ok.focus()}else{ok.textContent="Something went wrong. Please call 0758 630928 or use WhatsApp.";ok.classList.add("on")}
 };
 const storageKey="monmon-accessibility";
-const defaultState={scale:"normal",highContrast:false,reduceMotion:false,underlineLinks:false};
-const savedScaleMap={small:"normal",normal:"slightly-larger",large:"larger"};
-const scaleValues=["normal","slightly-larger","larger"];
+const defaultState={scale:"compact",highContrast:false,reduceMotion:false,underlineLinks:false};
+const savedScaleMap={small:"compact",normal:"compact", "slightly-larger":"medium",large:"original",larger:"original"};
+const scaleValues=["compact","medium","original"];
 const state={...defaultState};
 const accTrigger=$("#accb");
 const accPanel=$("#accp");
