@@ -27,7 +27,7 @@ const WHY=[["Quality First","Carefully prepared designs and professional print f
 
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const pic=(src,alt,h)=>src?`<img class="ph" src="${src}" alt="${esc(alt)}" loading="lazy" ${h?`style="height:${h}px"`:""}>`:`<div class="ph" role="img" aria-label="${esc(alt)}" ${h?`style="height:${h}px"`:""}>Add photo: ${esc(alt)}</div>`;
+const pic=(src,alt,h)=>src?`<img class="ph" src="${src}" alt="${esc(alt)}" loading="lazy" ${h?`style="height:calc(${h}px * var(--content-scale))"`:""}>`:`<div class="ph" role="img" aria-label="${esc(alt)}" ${h?`style="height:calc(${h}px * var(--content-scale))"`:""}>Add photo: ${esc(alt)}</div>`;
 
 // hero/showcase images
 $$("[data-img]").forEach(el=>{el.innerHTML=pic(IMAGES[el.dataset.img],el.dataset.alt);el.style.height="100%"});
