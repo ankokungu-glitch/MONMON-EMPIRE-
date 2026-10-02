@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="page-shell">
+<div class="page-shell" data-site-content>
   <header id="top"><div class="wrap nav">
     <a class="logo" href="#home" aria-label="MONMON EMPIRE PRINTERS home">MONMON EMPIRE<small>PRINTERS</small></a>
     <nav aria-label="Main"><ul id="menu">
@@ -65,7 +65,7 @@
   <section id="about"><div class="wrap">
     <h2 class="rv">Why Choose Monmon Empire Printers?</h2>
     <p class="sub rv">Design, printing and branding under one roof, in the heart of Wang'uru.</p>
-    <ul class="why" style="background:none;list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:28px" id="whyl"></ul>
+    <ul class="why" style="background:none;list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:calc(28px * var(--spacing-scale))" id="whyl"></ul>
   </div></section>
 
   <section class="why"><div class="wrap">
@@ -80,7 +80,7 @@
     <a class="btn blue" href="#quote">Start Your Order</a>
   </div></section>
 
-  <section class="show dark" style="padding:clamp(80px,14vw,160px) 0">
+  <section class="show dark">
     <div class="bg" data-img="showcase" data-alt="Close-up of printed materials"></div>
     <div class="wrap">
       <h2>Your Brand Deserves to Be Seen.</h2>
